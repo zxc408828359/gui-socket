@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.*;
 
@@ -26,6 +27,7 @@ public class Server {
     private JScrollPane scroller;
     private JTextArea serverTextArea;
     private ArrayList<PrintWriter> clientOutputStreams;
+    private HashMap<Object,PrintWriter> clientOutputStreamsMap;
     private String nickname;
 
     public static void main(String[] args) {
@@ -119,7 +121,7 @@ public class Server {
 
                                         PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
                                         clientOutputStreams.add(writer);
-
+                                        clientOutputStreamsMap.put(clientSocket.getInetAddress(),writer);
                                         Thread t = new Thread(new ClientHandler(clientSocket));
                                         t.start();
                                     }
@@ -193,6 +195,8 @@ public class Server {
             try {
                 aSocket = clientSocket;
                 InputStreamReader isReader = new InputStreamReader(aSocket.getInputStream());
+                InetAddress inetAddress = aSocket.getInetAddress();
+                System.out.println(inetAddress);
                 bReader = new BufferedReader(isReader);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -204,12 +208,19 @@ public class Server {
             String message;
             try {
                 while ((message = bReader.readLine()) != null) {
-                    sendToEveryClient(message);
+                    //sendToEveryClient(message);
+                    sendToEveryClientSin(message);
                     serverTextArea.append(message + "\n");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+        // 发送消息给单个客户端的方法
+        private void sendToEveryClientSin(String message) {
+            PrintWriter printWriter = clientOutputStreamsMap.get(aSocket);
+            printWriter.println(message);
+            printWriter.flush();
         }
     }
 
