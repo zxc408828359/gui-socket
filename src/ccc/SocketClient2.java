@@ -10,8 +10,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.UUID;
 
-public class Client {
+public class SocketClient2 {
     private JFrame clientFrame;
     private JLabel IPLabel;
     private JLabel PortLabel;
@@ -35,12 +36,12 @@ public class Client {
     private String nickname;
 
     public static void main(String args[]) {
-        Client aClient = new Client();
+        SocketClient2 aClient = new SocketClient2();
         aClient.startUp();
     }
 
     // 初始化组件
-    public Client() {
+    public SocketClient2() {
         nickname = "客户端";
 
         clientFrame = new JFrame();
@@ -126,7 +127,7 @@ public class Client {
                // String aServerIP = IPText.getText();
                // String aServerPort = PortText.getText();
                 String aServerIP = "127.0.0.1";
-                String aServerPort = "8080";
+                String aServerPort = "8088";
 
                 if (aServerIP.equals("") || aServerPort.equals("")) {
                     JOptionPane.showMessageDialog(clientFrame, "请输入 完整的 IP和端口！");
@@ -137,7 +138,9 @@ public class Client {
                         InputStreamReader streamReader = new InputStreamReader(clientSocket.getInputStream());
                         reader = new BufferedReader(streamReader);
                         writer = new PrintWriter(clientSocket.getOutputStream());
-
+                        String uuid = UUID.randomUUID().toString().replace("-", "");
+                        writer.println(uuid);
+                        writer.flush();
                         clientTextArea.append("服务器已连接...\n");
 
                         Thread readerThread = new Thread(incomingReader);

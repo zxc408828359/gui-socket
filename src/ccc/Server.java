@@ -113,7 +113,7 @@ public class Server {
                             public void run() {
                                 ServerSocket serverSocket;
                                 try {
-                                    serverSocket = new ServerSocket(Integer.parseInt(aPort));
+                                    serverSocket = new ServerSocket(Integer.parseInt("8080"));
                                     serverTextArea.append("正在等待客户端连接...\n");
                                     while (true) {
                                         Socket clientSocket = serverSocket.accept();
@@ -121,7 +121,8 @@ public class Server {
 
                                         PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
                                         clientOutputStreams.add(writer);
-                                        clientOutputStreamsMap.put(clientSocket.getInetAddress(),writer);
+                                       /* if(clientSocket!=null){
+                                        clientOutputStreamsMap.put(clientSocket.getLocalAddress(),writer);}*/
                                         Thread t = new Thread(new ClientHandler(clientSocket));
                                         t.start();
                                     }
@@ -218,7 +219,7 @@ public class Server {
         }
         // 发送消息给单个客户端的方法
         private void sendToEveryClientSin(String message) {
-            PrintWriter printWriter = clientOutputStreamsMap.get(aSocket);
+            PrintWriter printWriter = clientOutputStreamsMap.get(aSocket.getInetAddress());
             printWriter.println(message);
             printWriter.flush();
         }
