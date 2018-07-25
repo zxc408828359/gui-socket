@@ -1,5 +1,7 @@
 package ccc;
 
+import gui.MyButton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
