@@ -133,18 +133,21 @@ public class SocketClient1 {
                     JOptionPane.showMessageDialog(clientFrame, "请输入 完整的 IP和端口！");
                 } else {
                     try {
-                        @SuppressWarnings("resource")
-                        Socket clientSocket = new Socket(aServerIP, Integer.parseInt(aServerPort));
-                        InputStreamReader streamReader = new InputStreamReader(clientSocket.getInputStream());
-                        reader = new BufferedReader(streamReader);
-                        writer = new PrintWriter(clientSocket.getOutputStream());
-                        String uuid = UUID.randomUUID().toString().replace("-", "");
-                        writer.println(uuid);
-                        writer.flush();
-                        clientTextArea.append("服务器已连接...\n");
 
-                        Thread readerThread = new Thread(incomingReader);
-                        readerThread.start();
+                            @SuppressWarnings("resource")
+                            Socket clientSocket = new Socket(aServerIP, Integer.parseInt(aServerPort));
+                            InputStreamReader streamReader = new InputStreamReader(clientSocket.getInputStream());
+                            reader = new BufferedReader(streamReader);
+                            writer = new PrintWriter(clientSocket.getOutputStream());
+                            String uuid = UUID.randomUUID().toString().replace("-", "");
+                            writer.println(uuid);
+                            writer.flush();
+                            clientTextArea.append("服务器已连接...\n");
+
+                            Thread readerThread = new Thread(incomingReader);
+                            readerThread.start();
+
+
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(clientFrame, "连接不上服务器!\n请确认 IP 和 端口 输入正确。");
                     }

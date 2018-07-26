@@ -65,11 +65,12 @@ public class SocketServer2 {
         BufferedReader bReader;
         Socket aSocket;
         String ID;
+        InputStreamReader isReader;
         public ClientHandler(Socket clientSocket,String ID) {
             try {
                 this.ID=ID;
                 aSocket = clientSocket;
-                InputStreamReader isReader = new InputStreamReader(aSocket.getInputStream());
+                isReader = new InputStreamReader(aSocket.getInputStream());
                 InetAddress inetAddress = aSocket.getInetAddress();
                 System.out.println(inetAddress);
                 bReader = new BufferedReader(isReader);
@@ -82,18 +83,22 @@ public class SocketServer2 {
         public void run() {
             String message;
             try {
+
                 while ((message = bReader.readLine()) != null) {
                     //从map中去取socket 对象
                     //sendToOneClient(message,ID);
 
                     //使用从带过来的socket
                     sendToOneClient2(message);
-                    System.out.println(ID+":"+message);
+                    System.out.println("threadName"+Thread.currentThread().getName()+"，"+ID+":"+message);
+                    aSocket.shutdownInput();
+
+
                     //  sendToEveryClientSin(message);
                     // serverTextArea.append(message + "\n");
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("线程终止");
             }
         }
         private void sendToOneClient2(String message) throws Exception{
